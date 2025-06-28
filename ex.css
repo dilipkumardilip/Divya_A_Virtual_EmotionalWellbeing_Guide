@@ -1,0 +1,33 @@
+.main-header {
+        background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: black;
+    }
+    
+    .content-type-card {
+        background: #3082d4;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #FF6B6B;
+        margin: 0.5rem 0;
+    }
+    
+    .generated-content {
+        background: #3eaed4;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        border: 1px solid #4ECDC4;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+        color: rgb(212, 151, 151);
+        border: none;
+        padding: 0.5rem 2rem;
+        border-radius: 25px;
+        font-weight: bold;
+    }

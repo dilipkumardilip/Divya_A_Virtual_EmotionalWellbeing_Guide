@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divya - Virtual Influencer Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .input-section, .output-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 3px solid #ee5a24;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #ee5a24;
+            box-shadow: 0 0 10px rgba(238, 90, 36, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(238, 90, 36, 0.3);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .output-content {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 150px;
+            border-left: 4px solid #ee5a24;
+        }
+
+        .quote-display {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+            font-size: 1.1rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+
+        .generated-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .caption-box {
+            background: #e8f4f8;
+            border: 1px solid #74b9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        .tab-container {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #ee5a24;
+            border-bottom: 3px solid #ee5a24;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .file-upload {
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #ee5a24;
+            background: rgba(238, 90, 36, 0.05);
+        }
+
+        .automation-section {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #55a3ff, #003d82);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .automation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .automation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ee5a24;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Divya - Emotional Wisdom Coach</h1>
+            <p>AI-Powered Content Generator for Virtual Influencer</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">📝 Content Input</h2>
+                
+                <div class="tab-container">
+                    <button class="tab active" onclick="switchTab('quote')">Quote/Text</button>
+                    <button class="tab" onclick="switchTab('upload')">Upload File</button>
+                    <button class="tab" onclick="switchTab('topic')">Topic Based</button>
+                </div>
+
+                <div id="quote-tab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="quote-input">Enter Quote or Text:</label>
+                        <textarea id="quote-input" placeholder="e.g., You have a right to your actions, but not to the fruits of your actions - Bhagavad Gita" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quote-source">Source:</label>
+                        <input type="text" id="quote-source" placeholder="e.g., Bhagavad Gita, Chapter 2, Verse 47">
+                    </div>
+                </div>
+
+                <div id="upload-tab" class="tab-content">
+                    <div class="form-group">
+                        <label>Upload PDF/Image:</label>
+                        <div class="file-upload" onclick="document.getElementById('file-input').click()">
+                            <p>📁 Click to upload PDF or Image</p>
+                            <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="topic-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="topic-select">Select Topic:</label>
+                        <select id="topic-select">
+                            <option value="">Choose a topic...</option>
+                            <option value="relationships">Relationships & Love</option>
+                            <option value="emotional-regulation">Emotional Regulation</option>
+                            <option value="boundaries">Setting Boundaries</option>
+                            <option value="self-love">Self-Love & Confidence</option>
+                            <option value="friendship">Friendship Dynamics</option>
+                            <option value="mindfulness">Mindfulness & Mental Health</option>
+                            <option value="red-flags">Recognizing Red Flags</option>
+                            <option value="communication">Healthy Communication</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="custom-topic">Or Enter Custom Topic:</label>
+                        <input type="text" id="custom-topic" placeholder="e.g., Dealing with heartbreak">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content-type">Content Type:</label>
+                    <select id="content-type">
+                        <option value="quote-reflection">Quote Reflection</option>
+                        <option value="psychology-bite">Psychology Bite</option>
+                        <option value="story-reel">Story Reel</option>
+                        <option value="pop-culture">Pop Culture Critique</option>
+                        <option value="practice">Emotional Practice</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="generateContent()">🚀 Generate Content</button>
+            </div>
+
+            <div class="output-section">
+                <h2 class="section-title">📱 Generated Content</h2>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Generating content...</p>
+                </div>
+
+                <div id="output-content">
+                    <div class="tab-container">
+                        <button class="tab active" onclick="switchOutput('script')">Script</button>
+                        <button class="tab" onclick="switchOutput('image')">Image</button>
+                        <button class="tab" onclick="switchOutput('caption')">Caption</button>
+                    </div>
+
+                    <div id="script-output" class="tab-content active">
+                        <div class="output-content" id="generated-script">
+                            <p style="color: #7f8c8d; text-align: center;">Generated script will appear here...</p>
+                        </div>
+                    </div>
+
+                    <div id="image-output" class="tab-content">
+                        <div class="output-content" id="generated-image-container">
+                            <p style="color: #7f8c8d; text-align: center;">Generated image will appear here...</p>
+                        </div>
+                    </div>
+
+                    <div id="caption-output" class="tab-content">
+                        <div class="output-content" id="generated-caption">
+                            <p style="color: #7f8c8d; text-align: center;">Generated caption will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="automation-section">
+            <h2 class="section-title" style="color: white; border-color: white;">🤖 Instagram Automation</h2>
+            <p style="margin-bottom: 20px;">One-click posting to Instagram with generated content</p>
+            
+            <div class="automation-grid">
+                <div class="automation-card">
+                    <h3>📋 Preview Post</h3>
+                    <p>Preview how your post will look on Instagram</p>
+                    <button class="btn" onclick="previewPost()" style="margin-top: 15px;">Preview</button>
+                </div>
+                
+                <div class="automation-card">
+                    <h3>⏰ Schedule Post</h3>
+                    <p>Schedule your post for optimal engagement times</p>
+                    <button class="btn" onclick="schedulePost()" style="margin-top: 15px;">Schedule</button>
+                </div>
+                
+                <div class="automation-card">
+                    <h3>🚀 Post Now</h3>
+                    <p>Instantly publish to your Instagram account</p>
+                    <button class="btn" onclick="postToInstagram()" style="margin-top: 15px;">Post Now</button>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store generated content
+        let generatedScript = '';
+        let generatedImage = '';
+        let generatedCaption = '';
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content and activate tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function switchOutput(outputType) {
+            // Hide all output contents
+            document.querySelectorAll('#output-content .tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all output tabs
+            document.querySelectorAll('#output-content .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected output content and activate tab
+            document.getElementById(outputType + '-output').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // File upload handling
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileName = file.name;
+                document.querySelector('.file-upload p').textContent = `📁 ${fileName} selected`;
+            }
+        });
+
+        // Main content generation function
+        async function generateContent() {
+            const loading = document.getElementById('loading');
+            const outputContent = document.getElementById('output-content');
+            
+            loading.style.display = 'block';
+            outputContent.style.opacity = '0.5';
+
+            try {
+                // Get input data
+                const inputData = getInputData();
+                
+                // Generate script
+                generatedScript = await generateScript(inputData);
+                document.getElementById('generated-script').innerHTML = `
+                    <div class="quote-display">"${inputData.quote || inputData.topic}"</div>
+                    <h4>Generated Script (120-150 words):</h4>
+                    <p>${generatedScript}</p>
+                `;
+
+                // Generate image prompt and simulate image generation
+                const imagePrompt = generateImagePrompt(inputData);
+                document.getElementById('generated-image-container').innerHTML = `
+                    <h4>Image Concept:</h4>
+                    <p><strong>Visual Description:</strong> ${imagePrompt}</p>
+                    <div style="background: linear-gradient(135deg, #ff9a9a, #fad0c4); height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; margin: 15px 0;">
+                        🎨 AI-Generated Image<br>
+                        <small style="font-size: 14px; margin-top: 10px;">Divya - Emotional Wisdom Visual</small>
+                    </div>
+                    <p><em>Note: In production, this would generate an actual AI image using DALL-E or Midjourney</em></p>
+                `;
+
+                // Generate Instagram caption
+                generatedCaption = generateInstagramCaption(inputData, generatedScript);
+                document.getElementById('generated-caption').innerHTML = `
+                    <div class="caption-box">${generatedCaption}</div>
+                `;
+
+            } catch (error) {
+                console.error('Error generating content:', error);
+                document.getElementById('generated-script').innerHTML = '<p style="color: red;">Error generating content. Please try again.</p>';
+            } finally {
+                loading.style.display = 'none';
+                outputContent.style.opacity = '1';
+            }
+        }
+
+        function getInputData() {
+            const activeTab = document.querySelector('.tab.active').textContent;
+            let data = {
+                contentType: document.getElementById('content-type').value
+            };
+
+            if (activeTab === 'Quote/Text') {
+                data.quote = document.getElementById('quote-input').value;
+                data.source = document.getElementById('quote-source').value;
+            } else if (activeTab === 'Topic Based') {
+                data.topic = document.getElementById('topic-select').value || document.getElementById('custom-topic').value;
+            }
+
+            return data;
+        }
+
+        function generateScript(inputData) {
+            // This is a template-based script generator
+            // In production, this would call an LLM API
+            
+            const scriptTemplates = {
+                'quote-reflection': `Hey beautiful souls! 💕 
+
+Today I want to share something that completely shifted my perspective. ${inputData.quote ? `"${inputData.quote}"` : `This wisdom about ${inputData.topic}`} 
+
+You know what this means for us Gen Z? We're so used to wanting instant results, instant validation, instant everything. But this teaches us something powerful - focus on your effort, not the outcome.
+
+That crush who didn't text back? You did your part by being authentic. That job interview? You prepared well, that's what matters. That friendship that ended? You loved genuinely.
+
+The universe has its own timing, and our job is to show up as our best selves without being attached to specific results. This doesn't mean we don't care - it means we care enough to do our best without the anxiety of controlling outcomes.
+
+Try this: Next time you're stressed about results, ask yourself - "Did I give my honest effort?" If yes, then you've already won. 
+
+What's one area where you struggle with letting go of outcomes? Comment below! 👇
+
+#EmotionalWisdom #GenZWisdom #MentalHealthMatters #SelfGrowth #BhagavadGita #Mindfulness #LetGo #TrustTheProcess`,
+
+                'psychology-bite': `Psychology time! 🧠✨
+
+Let's talk about ${inputData.topic || 'emotional regulation'}. You know that feeling when your emotions feel like a roller coaster you can't get off? 
+
+Here's what's actually happening in your brain: Your amygdala (emotion center) is hijacking your prefrontal cortex (logical thinking). It's like your brain's security system going "CODE RED!" when maybe it's just a yellow alert.
+
+The cool part? You can train your brain! Here's a simple technique I learned:
+1. Notice the emotion (don't judge it)
+2. Name it: "I'm feeling anxious/angry/sad"
+3. Take 3 deep breaths
+4. Ask: "What does this emotion need right now?"
+
+Sometimes it needs validation ("This is hard"), sometimes action ("I need to set a boundary"), sometimes just time ("This feeling will pass").
+
+Your emotions aren't problems to solve - they're information to understand. The goal isn't to be happy 24/7 (that's toxic positivity), it's to be emotionally intelligent.
+
+What emotion do you struggle with the most? Let's normalize all feelings in the comments! 💬
+
+#PsychologyFacts #EmotionalIntelligence #MentalHealthAwareness #GenZMentalHealth #SelfAwareness #EmotionalRegulation #Mindfulness`,
+
+                'story-reel': `Story time that might hit too close to home... 📖💔
+
+So my friend came to me crying last week. Her boyfriend of 2 years just told her she's "too emotional" and needs to "chill out." 
+
+Red flag alert! 🚩
+
+Here's what I told her (and what I'm telling you): Your emotions are not "too much." If someone makes you feel like you need to shrink your feelings to fit their comfort zone, they're not your person.
+
+Healthy partners don't dismiss your emotions. They might not always understand them, but they respect them. They ask "How can I support you?" not "Why are you being so dramatic?"
+
+The right person will create space for all of you - the happy you, the sad you, the angry you, the confused you. They won't love you despite your emotions; they'll love you INCLUDING your emotions.
+
+My friend? She had that difficult conversation. She set boundaries. And guess what? He either learns to respect her feelings or he's showing her who he really is.
+
+You deserve someone who sees your emotional depth as a strength, not a burden. Don't let anyone gaslight you into believing otherwise.
+
+Tag someone who needs to hear this 👇 
+
+#RelationshipRedFlags #KnowYourWorth #EmotionalValidation #HealthyRelationships #BoundariesMatter #SelfLove #GenZDating #ToxicRelationships #EmotionalAbuse #YouDeserveBetter`,
+
+                'pop-culture': `Can we talk about ${inputData.topic || 'toxic Bollywood romance'} for a sec? 🎬
+
+I just rewatched Kabir Singh and I'm TRIGGERED. This movie literally romanticizes stalking, possessiveness, and emotional abuse. Yet somehow it made 278 crores? 
+
+Let's break this down:
+- Kabir doesn't love Preeti, he OWNS her
+- He makes zero effort to understand her feelings
+- His "love" is actually just his ego and control issues
+- The movie frames his toxic behavior as "passionate love"
+
+Real love looks like:
+✅ Respecting boundaries
+✅ Supporting partner's dreams
+✅ Healthy communication during conflicts
+✅ Growing together, not controlling each other
+
+The scariest part? How many people walked out thinking "goals!" 
+
+Media literally shapes how we view relationships. When we normalize stalking as romantic, we're setting up an entire generation for toxic relationships.
+
+Same energy with international movies - 365 Days, Twilight (Edward was controlling AF), even some K-dramas with their "persistent male leads."
+
+We need to consume media critically. Ask yourself: "Would I want this treatment in real life?" If the answer is no, don't romanticize it on screen.
+
+What's a movie/show that made you question relationship standards? Drop it below 👇
+
+#PopCultureCritique #ToxicRomance #MediaLiteracy #HealthyLove #BollywoodProblems #KnowTheRedFlags #CriticalThinking #RepresentationMatters`,
+
+                'practice': `Let's practice some emotional magic together! ✨🧘‍♀️
+
+Today's practice: The 5-4-3-2-1 Grounding Technique (perfect for anxiety, overthinking, or when emotions feel overwhelming)
+
+Here's how:
+🖐️ 5 things you can SEE (look around right now)
+✋ 4 things you can TOUCH (your phone, chair, clothes, hair)
+👌 3 things you can HEAR (traffic, music, your breathing)
+✌️ 2 things you can SMELL (coffee, perfume, fresh air)
+☝️ 1 thing you can TASTE (water, gum, or just your mouth)
+
+This brings you back to your body and out of your anxious thoughts. Your brain literally can't be in fight-or-flight mode when you're mindfully observing your environment.
+
+I do this before:
+- Difficult conversations
+- Job interviews  
+- First dates
+- Family gatherings (we all have that one relative 😅)
+- Whenever I'm spiraling
+
+Try it right now as you read this! Don't just save this post - actually DO it. Your nervous system will thank you.
+
+The goal isn't to eliminate anxiety (that's impossible), it's to have tools to navigate it with grace.
+
+Did you try it? How do you feel? Share in comments - let's normalize talking about our mental health tools! 💕
+
+#MindfulnessPractice #AnxietyRelief #GroundingTechnique #MentalHealthTools #SelfCare #EmotionalRegulation #PresentMoment #MindBodyConnection #GenZWellness #CopingSkills`
+            };
+
+            return scriptTemplates[inputData.contentType] || scriptTemplates['quote-reflection'];
+        }
+
+        function generateImagePrompt(inputData) {
+            const imagePrompts = {
+                'quote-reflection': `A serene, aesthetically pleasing image of a young Indian woman (Divya) sitting in a cozy, well-lit space with books and plants around her. She's holding a journal and has a peaceful, contemplative expression. Warm golden hour lighting, boho-chic decor, soft pastel colors. The quote "${inputData.quote || inputData.topic}" appears as elegant text overlay.`,
+                
+                'psychology-bite': `Modern, clean infographic-style image with Divya explaining psychological concepts. Brain illustrations, colorful charts, and easy-to-understand visual elements. Professional yet approachable aesthetic with Indian cultural elements subtly incorporated.`,
+                
+                'story-reel': `Cinematic storytelling image showing emotional moments - perhaps split screens showing healthy vs toxic relationship dynamics. Divya as narrator with expressive body language. Warm, film-like color grading.`,
+                
+                'pop-culture': `Split screen or collage showing movie scenes contrasted with real healthy relationship examples. Divya in the center as the guide/critic. Bold, editorial-style design with movie posters and analysis text.`,
+                
+                'practice': `Calming, instructional image showing Divya demonstrating mindfulness techniques. Natural lighting, plants, meditation setup. Step-by-step visual guide overlay. Peaceful, zen-like atmosphere.`
+            };
+
+            return imagePrompts[inputData.contentType] || imagePrompts['quote-reflection'];
+        }
+
+        function generateInstagramCaption(inputData, script) {
+            const hook = script.split('\n')[0];
+            const mainContent = script.substring(0, 200) + '...';
+            
+            return `${hook}
+
+${mainContent}
+
+Read full post in comments 👇
+
+—————————————————
+
+🎯 Follow @divya.emotionalwisdom for daily doses of:
+✨ Relationship wisdom
+🧠 Psychology insights  
+💕 Self-love practices
+🎬 Pop culture critiques
+🌱 Mental health tips
+
+—————————————————
+
+#EmotionalWisdom #GenZLife #MentalHealthAwareness #RelationshipGoals #SelfLove #BoundariesMatter #PsychologyFacts #IndianInfluencer #WisdomQuotes #EmotionalIntelligence #Mindfulness #DelhiInfluencer #GenZWisdom #HealthyRelationships #SelfGrowth #MentalHealthMatters #InnerWork #Boundaries #SelfCare #Authenticity
+
+💬 What resonates with you most? Comment below!
+🔄 Share if this helped someone you know
+💾 Save for later reflection
+
+#DivyaSpeaks #EmotionalGrowth #GenerationZ`;
+        }
+
+    
+    </script>
+</body>
+</html>
